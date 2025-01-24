@@ -1,5 +1,21 @@
 # Forex-app
-A foreign exchange application.
+This API provides currency conversion services, allowing users to convert amounts from one currency to another using the latest exchange rates. The service also allows users to retrieve conversion histories and get details about specific transactions.
+
+# Installation and Setup
+
+To run this project locally, follow these steps:
+
+1. Clone the repository:
+- git clone https://github.com/runikolov01/forex-app
+- cd forex-app
+
+2. Set up the dependencies:
+- Make sure you have Java (JDK 17 or higher) installed.
+- Use Maven to install dependencies: mvn clean install
+
+3. Run the application:
+- mvn spring-boot:run
+
 
 # Functionalities
 
