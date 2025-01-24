@@ -22,40 +22,67 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 
     @Override
     public ExchangeRate getExchangeRate(String fromCurrency, String toCurrency) {
-        BigDecimal rate = externalAPIClient.getExchangeRate(fromCurrency, toCurrency);
+        try {
+            BigDecimal rate = externalAPIClient.getExchangeRate(fromCurrency, toCurrency);
 
-        ExchangeRate exchangeRate = new ExchangeRate();
-        exchangeRate.setFromCurrency(fromCurrency);
-        exchangeRate.setToCurrency(toCurrency);
-        exchangeRate.setRate(rate);
+            if (rate == null) {
+                throw new RuntimeException("Failed to fetch exchange rate from " + fromCurrency + " to " + toCurrency);
+            }
 
-        return exchangeRate;
+            ExchangeRate exchangeRate = new ExchangeRate();
+            exchangeRate.setFromCurrency(fromCurrency);
+            exchangeRate.setToCurrency(toCurrency);
+            exchangeRate.setRate(rate);
+
+            return exchangeRate;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error fetching exchange rate: " + ex.getMessage());
+        }
     }
 
     @Override
     public BigDecimal fetchExternalExchangeRate(String fromCurrency, String toCurrency) {
-        return externalAPIClient.getExchangeRate(fromCurrency, toCurrency);
+        try {
+            BigDecimal rate = externalAPIClient.getExchangeRate(fromCurrency, toCurrency);
+
+            if (rate == null) {
+                throw new RuntimeException("Failed to fetch exchange rate from " + fromCurrency + " to " + toCurrency);
+            }
+
+            return rate;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error fetching external exchange rate: " + ex.getMessage());
+        }
     }
 
     @Override
     public CurrencyConversion convertCurrency(BigDecimal amount, String fromCurrency, String toCurrency) {
-        BigDecimal exchangeRate = externalAPIClient.getExchangeRate(fromCurrency, toCurrency);
-        BigDecimal convertedAmount = amount.multiply(exchangeRate).setScale(2, BigDecimal.ROUND_HALF_UP);
+        try {
+            BigDecimal exchangeRate = externalAPIClient.getExchangeRate(fromCurrency, toCurrency);
 
-        String transactionId = UUID.randomUUID().toString();
-        LocalDateTime transactionDate = LocalDateTime.now();
+            if (exchangeRate == null) {
+                throw new RuntimeException("Exchange rate not available for " + fromCurrency + " to " + toCurrency);
+            }
 
-        CurrencyConversion conversion = new CurrencyConversion();
-        conversion.setTransactionId(transactionId);
-        conversion.setFromCurrency(fromCurrency);
-        conversion.setToCurrency(toCurrency);
-        conversion.setAmount(amount);
-        conversion.setConvertedAmount(convertedAmount);
-        conversion.setExchangeRate(exchangeRate);
-        conversion.setTransactionDate(transactionDate);
+            BigDecimal convertedAmount = amount.multiply(exchangeRate).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-        currencyConversionRepository.save(conversion);
+            String transactionId = UUID.randomUUID().toString();
+            LocalDateTime transactionDate = LocalDateTime.now();
 
-        return conversion;
+            CurrencyConversion conversion = new CurrencyConversion();
+            conversion.setTransactionId(transactionId);
+            conversion.setFromCurrency(fromCurrency);
+            conversion.setToCurrency(toCurrency);
+            conversion.setAmount(amount);
+            conversion.setConvertedAmount(convertedAmount);
+            conversion.setExchangeRate(exchangeRate);
+            conversion.setTransactionDate(transactionDate);
+
+            currencyConversionRepository.save(conversion);
+
+            return conversion;
+        } catch (Exception ex) {
+            throw new RuntimeException("Error during currency conversion: " + ex.getMessage());
+        }
     }
 }
