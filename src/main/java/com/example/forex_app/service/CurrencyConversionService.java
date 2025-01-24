@@ -11,6 +11,5 @@ public interface CurrencyConversionService {
 
     CurrencyConversion getConversionByTransactionId(String transactionId);
 
-    List<Map<String, Object>> getConversionHistory(String transactionId, String transactionDate);
-
+    List<Map<String, Object>> getConversionHistory(String transactionId, String transactionDate, int page, int size);
 }

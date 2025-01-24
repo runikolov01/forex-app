@@ -6,6 +6,8 @@ import com.example.forex_app.repository.CurrencyConversionRepository;
 import com.example.forex_app.service.CurrencyConversionService;
 import com.example.forex_app.service.ExchangeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -53,13 +55,16 @@ public class CurrencyConversionServiceImpl implements CurrencyConversionService 
     }
 
     @Override
-    public List<Map<String, Object>> getConversionHistory(String transactionId, String transactionDate) {
-        // Assuming you want to fetch by date and/or transactionId
-        List<CurrencyConversion> conversions = currencyConversionRepository.findByTransactionDateBetween(
+    public List<Map<String, Object>> getConversionHistory(String transactionId, String transactionDate, int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+
+        Page<CurrencyConversion> conversions = currencyConversionRepository.findByTransactionDateBetween(
                 LocalDateTime.parse(transactionDate + "T00:00:00"),
-                LocalDateTime.parse(transactionDate + "T23:59:59")
+                LocalDateTime.parse(transactionDate + "T23:59:59"),
+                pageRequest
         );
-        return conversions.stream()
+
+        return conversions.getContent().stream()
                 .map(conversion -> {
                     Map<String, Object> response = new HashMap<>();
                     response.put("transactionId", conversion.getTransactionId());
