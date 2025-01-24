@@ -7,8 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/currency-conversion")
@@ -34,14 +34,17 @@ public class CurrencyConversionController {
     }
 
     @GetMapping("/history")
-    public ResponseEntity<List<CurrencyConversion>> getConversionsByDate(
-            @RequestParam(required = false) String startDate,
-            @RequestParam(required = false) String endDate) {
+    public ResponseEntity<List<Map<String, Object>>> getConversionHistory(
+            @RequestParam(required = false) String transactionId,
+            @RequestParam(required = false) String transactionDate,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        LocalDateTime start = (startDate != null) ? LocalDateTime.parse(startDate) : LocalDateTime.now().minusDays(30);
-        LocalDateTime end = (endDate != null) ? LocalDateTime.parse(endDate) : LocalDateTime.now();
+        if (transactionId == null && transactionDate == null) {
+            return ResponseEntity.badRequest().body(null);
+        }
 
-        List<CurrencyConversion> conversions = currencyConversionService.getConversionsByDate(start, end);
-        return ResponseEntity.ok(conversions);
+        List<Map<String, Object>> conversionHistory = currencyConversionService.getConversionHistory(transactionId, transactionDate);
+        return ResponseEntity.ok(conversionHistory);
     }
 }
