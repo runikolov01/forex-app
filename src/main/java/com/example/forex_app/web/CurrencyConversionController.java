@@ -44,7 +44,8 @@ public class CurrencyConversionController {
             return ResponseEntity.badRequest().body(null);
         }
 
-        List<Map<String, Object>> conversionHistory = currencyConversionService.getConversionHistory(transactionId, transactionDate);
+        List<Map<String, Object>> conversionHistory = currencyConversionService.getConversionHistory(transactionId, transactionDate, page, size);
         return ResponseEntity.ok(conversionHistory);
     }
+
 }
