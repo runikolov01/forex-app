@@ -26,12 +26,6 @@ public class ExchangeRateController {
         return ResponseEntity.ok(exchangeRate);
     }
 
-    @GetMapping("/external")
-    public ResponseEntity<BigDecimal> fetchExternalExchangeRate(@RequestParam String fromCurrency, @RequestParam String toCurrency) {
-        BigDecimal rate = exchangeRateService.fetchExternalExchangeRate(fromCurrency, toCurrency);
-        return ResponseEntity.ok(rate);
-    }
-
     @GetMapping("/convert")
     public ResponseEntity<Map<String, Object>> convertCurrency(
             @RequestParam BigDecimal amount,
@@ -41,7 +35,6 @@ public class ExchangeRateController {
         BigDecimal exchangeRate = exchangeRateService.fetchExternalExchangeRate(fromCurrency, toCurrency);
         BigDecimal convertedAmount = amount.multiply(exchangeRate);
 
-        // Prepare response data
         Map<String, Object> conversionResponse = new HashMap<>();
         conversionResponse.put("amount", amount);
         conversionResponse.put("fromCurrency", fromCurrency);
