@@ -18,7 +18,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
     private ExternalAPIClient externalAPIClient;
 
     @Autowired
-    private CurrencyConversionRepository currencyConversionRepository;  // To save conversion data
+    private CurrencyConversionRepository currencyConversionRepository;
 
     @Override
     public ExchangeRate getExchangeRate(String fromCurrency, String toCurrency) {
@@ -42,10 +42,9 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
         BigDecimal exchangeRate = externalAPIClient.getExchangeRate(fromCurrency, toCurrency);
         BigDecimal convertedAmount = amount.multiply(exchangeRate).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-        String transactionId = UUID.randomUUID().toString();  // Generate unique transaction ID
-        LocalDateTime transactionDate = LocalDateTime.now();  // Capture transaction date/time
+        String transactionId = UUID.randomUUID().toString();
+        LocalDateTime transactionDate = LocalDateTime.now();
 
-        // Create and populate the CurrencyConversion entity
         CurrencyConversion conversion = new CurrencyConversion();
         conversion.setTransactionId(transactionId);
         conversion.setFromCurrency(fromCurrency);
@@ -55,9 +54,8 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
         conversion.setExchangeRate(exchangeRate);
         conversion.setTransactionDate(transactionDate);
 
-        // Save the conversion to the database (optional step if needed)
         currencyConversionRepository.save(conversion);
 
-        return conversion;  // Return the CurrencyConversion object instead of ConversionResponse
+        return conversion;
     }
 }
