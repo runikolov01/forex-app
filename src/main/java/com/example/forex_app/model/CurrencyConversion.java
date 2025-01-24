@@ -20,6 +20,7 @@ public class CurrencyConversion {
     private String toCurrency;
     private BigDecimal convertedAmount;
     private String transactionId;
+    private BigDecimal exchangeRate;
     private LocalDateTime transactionDate;
 
     public Long getId() {
@@ -68,6 +69,14 @@ public class CurrencyConversion {
 
     public void setTransactionId(String transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public BigDecimal getExchangeRate() {
+        return exchangeRate;
+    }
+
+    public void setExchangeRate(BigDecimal exchangeRate) {
+        this.exchangeRate = exchangeRate;
     }
 
     public LocalDateTime getTransactionDate() {
