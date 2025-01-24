@@ -1,6 +1,5 @@
 package com.example.forex_app.web;
 
-import com.example.forex_app.model.ConversionResponse;
 import com.example.forex_app.model.ExchangeRate;
 import com.example.forex_app.service.ExchangeRateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/exchange-rate")
@@ -32,12 +33,21 @@ public class ExchangeRateController {
     }
 
     @GetMapping("/convert")
-    public ResponseEntity<ConversionResponse> convertCurrency(
+    public ResponseEntity<Map<String, Object>> convertCurrency(
             @RequestParam BigDecimal amount,
             @RequestParam String fromCurrency,
             @RequestParam String toCurrency) {
 
-        ConversionResponse conversionResponse = exchangeRateService.convertCurrency(amount, fromCurrency, toCurrency);
+        BigDecimal exchangeRate = exchangeRateService.fetchExternalExchangeRate(fromCurrency, toCurrency);
+        BigDecimal convertedAmount = amount.multiply(exchangeRate);
+
+        // Prepare response data
+        Map<String, Object> conversionResponse = new HashMap<>();
+        conversionResponse.put("amount", amount);
+        conversionResponse.put("fromCurrency", fromCurrency);
+        conversionResponse.put("toCurrency", toCurrency);
+        conversionResponse.put("convertedAmount", convertedAmount);
+        conversionResponse.put("exchangeRate", exchangeRate);
 
         return ResponseEntity.ok(conversionResponse);
     }
