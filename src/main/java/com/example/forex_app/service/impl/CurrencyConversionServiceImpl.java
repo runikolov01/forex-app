@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class CurrencyConversionServiceImpl implements CurrencyConversionService {
@@ -36,6 +39,7 @@ public class CurrencyConversionServiceImpl implements CurrencyConversionService 
         conversion.setConvertedAmount(convertedAmount);
         conversion.setTransactionId(transactionId);
         conversion.setTransactionDate(LocalDateTime.now());
+        conversion.setExchangeRate(exchangeRate.getRate());
 
         currencyConversionRepository.save(conversion);
 
@@ -49,7 +53,23 @@ public class CurrencyConversionServiceImpl implements CurrencyConversionService 
     }
 
     @Override
-    public List<CurrencyConversion> getConversionsByDate(LocalDateTime startDate, LocalDateTime endDate) {
-        return currencyConversionRepository.findByTransactionDateBetween(startDate, endDate);
+    public List<Map<String, Object>> getConversionHistory(String transactionId, String transactionDate) {
+        // Assuming you want to fetch by date and/or transactionId
+        List<CurrencyConversion> conversions = currencyConversionRepository.findByTransactionDateBetween(
+                LocalDateTime.parse(transactionDate + "T00:00:00"),
+                LocalDateTime.parse(transactionDate + "T23:59:59")
+        );
+        return conversions.stream()
+                .map(conversion -> {
+                    Map<String, Object> response = new HashMap<>();
+                    response.put("transactionId", conversion.getTransactionId());
+                    response.put("fromCurrency", conversion.getFromCurrency());
+                    response.put("toCurrency", conversion.getToCurrency());
+                    response.put("amount", conversion.getAmount());
+                    response.put("convertedAmount", conversion.getConvertedAmount());
+                    response.put("exchangeRate", conversion.getExchangeRate());
+                    return response;
+                })
+                .collect(Collectors.toList());
     }
 }
