@@ -37,11 +37,15 @@ _The result is visible in the database:_
 ![image](https://github.com/user-attachments/assets/eb9000e3-e934-4dfd-b51d-cb2d61d67337)
 
 **4. External Exchange Rate Integration:**
-- The external exchange rate integration is implemented with the ExternalAPIClient class. This class fetches exchange rates from the external Fixer API and performs the necessary calculations for currency conversion.
+- The external exchange rate integration is implemented with the ExternalAPIClient class. This class fetches exchange rates from the external Fixer API and performs the necessary calculations for currency conversion:
 ![image](https://github.com/user-attachments/assets/6285b4ab-3a1c-43f4-88b2-78982a49bfcc)
 
 
 **5. Error Handling:**
-- Errors must be handled gracefully, providing meaningful error messages and specific error codes.
+- Errors are handled gracefully, providing meaningful error messages and specific error codes.
+
+**6. Unit Testing:**
+- Unit tests are created to ensure the reliability and robustness of the application:
+![image](https://github.com/user-attachments/assets/2e6d0936-af37-4e58-88e3-38a79970b5e4)
 
 
