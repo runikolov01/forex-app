@@ -1,4 +1,4 @@
-# Forex-app
+# Forex-app _(foreign exchange application)_
 This API provides currency conversion services, allowing users to convert amounts from one currency to another using the latest exchange rates. The service also allows users to retrieve conversion histories and get details about specific transactions.
 
 # Installation and Setup
